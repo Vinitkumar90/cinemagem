@@ -2,15 +2,18 @@ import React, { useRef, useState } from "react";
 import Header from "./Header";
 import validate from "../utils/validate";
 import { auth } from "../utils/firebase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 import { dp_url } from "../utils/constant";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
-import { useNavigate } from "react-router";
+
 
 const Login = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const [signIn, setSignIn] = useState(true);
   const [message, setMessage] = useState(null);
@@ -29,7 +32,7 @@ const Login = () => {
     if (check) return;
 
     if (!signIn) {
-      //signup
+      //signup api
       createUserWithEmailAndPassword(
         auth,
         emailRef.current.value,
@@ -38,46 +41,52 @@ const Login = () => {
         .then((userCredential) => {
           const user = userCredential.user;
           console.log(user);
+          
+          //update profile api
+          updateProfile(user, {
+            displayName: nameRef.current.value,
+            photoURL: dp_url,
+          })
+            .then(() => {
+              // Profile updated!
+              //abb karunga store mai add
+              const { uid, email, displayName, photoURL } = auth.currentUser;
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
+                })
+              );
+            })
+            .catch((error) => {
+              //error while updating the fkn user
+              setMessage(error.message);
+            });
 
-              updateProfile(user, {
-                displayName: nameRef.current.value ,
-                 photoURL: dp_url
-              }).then(() => {
-                // Profile updated!
-                    //abb karunga store mai add
-                    const {uid,email,displayName,photoURL} = auth.currentUser
-                    dispatch(addUser({
-                      uid:uid,
-                      email:email,
-                      displayName:displayName,
-                      photoURL:photoURL
-                    }))
-                    navigate("/browse");
-                    
-              }).catch((error) => {
-                //error while updating the fkn user
-                setMessage(error.message);
-              });
-
-
+          //. . .
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setMessage(errorMessage+errorCode);
+        });
+    } else {
+      //signin
+      signInWithEmailAndPassword(
+        auth,
+        emailRef.current.value,
+        passRef.current.value
+      )
+        .then((userCredential) => {
+          const user = userCredential.user;
+          //-- user data in here
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
           setMessage(errorMessage);
-        });
-    } else {
-        //signin
-      signInWithEmailAndPassword(auth, emailRef.current.value, passRef.current.value)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          console.log(user);
-          navigate("/browse");
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          setMessage(errorMessage)
         });
     }
   }
@@ -85,11 +94,11 @@ const Login = () => {
   return (
     <div
       className="bg-[url(https://static.vecteezy.com/system/resources/thumbnails/044/514/545/small_2x/background-a-movie-theater-where-love-stories-are-unfolding-on-the-big-screen-and-the-smell-of-popcorn-fills-the-air-photo.jpg)]
-                h-screen bg-no-repeat bg-center bg-cover brightness-80 contrast-125 "
+                h-screen bg-no-repeat bg-center bg-cover brightness-80 contrast-125 relative "
     >
-      <Header />
+      <Header /> 
       <form
-        className="p-6 px-14 bg-black mx-auto pt-50 max-w-120 rounded opacity-85 flex flex-col gap-2"
+        className="py-6 px-7 bg-black mx-auto fixed top-32 left-145 max-w-120 opacity-85 flex flex-col gap-2 border-1 border-neutral-600 rounded-2xl"
         onSubmit={(e) => e.preventDefault()}
       >
         <h2 className="mb-6 text-3xl font-bold text-white font-mono">
@@ -101,7 +110,7 @@ const Login = () => {
               type="text"
               ref={nameRef}
               placeholder="Enter your Name"
-              className="w-full  mb-6 py-4 px-2  border-2 border-gray-500  bg-slate-800 text-white
+              className="w-full  mb-6 py-2 px-4 rounded  border-1 border-gray-500  bg-slate-800 text-white
               text-lg
               "
             />
@@ -112,7 +121,7 @@ const Login = () => {
             type="email"
             ref={emailRef}
             placeholder="Enter your Email"
-            className="w-full  mb-6 py-4 px-2 border-2 border-gray-500  bg-slate-800 text-white
+            className="w-[350px]  mb-6 py-2 px-4 border-1 rounded border-gray-500  bg-slate-800 text-white
               text-lg"
           />
         </div>
@@ -121,7 +130,7 @@ const Login = () => {
             type="password"
             ref={passRef}
             placeholder="Enter your password"
-            className="w-full mb-2 py-4 px-2  border-2 border-gray-500 bg-slate-800 text-white
+            className="w-full mb-2 py-2 px-4   border-1 rounded  border-gray-500 bg-slate-800 text-white
               text-lg 
               "
           />
@@ -131,17 +140,28 @@ const Login = () => {
         <p className="text-orange-500 text-sm font-semibold mb-2 ">{message}</p>
 
         <button
-          className="bg-orange-800 hover:bg-orange-900 text-white w-full  py-2 px-2  font-mono text-2xl rounded mb-2"
+          className="bg-orange-700 hover:bg-orange-600 text-white w-full  py-2 px-2  font-mono text-2xl rounded mb-2 transition"
           onClick={() => validateKaro()}
         >
           Submit
         </button>
 
-        <p
-          className="text-white text-sm hover:underline cursor-pointer"
-          onClick={toggle}
-        >
-          {signIn ? "New to cinemaGEM ? signup now" : "Already a user sign In"}
+        <p className="text-white text-sm " onClick={toggle}>
+          {signIn ? (
+            <>
+              New to cinemaGEM?{" "}
+              <span className="text-blue-400 hover:underline cursor-pointer transition">
+                Signup now
+              </span>
+            </>
+          ) : (
+            <>
+              Already a user?{" "}
+              <span className="text-blue-400 hover:underline cursor-pointer transition">
+                Sign In
+              </span>
+            </>
+          )}
         </p>
       </form>
     </div>

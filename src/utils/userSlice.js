@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { act } from "react";
 
 
 const userSlice = createSlice({
@@ -9,7 +8,7 @@ const userSlice = createSlice({
         addUser:(state,action) => {
             return action.payload;
         },
-        removeUser:(state) => {
+        removeUser:(state) => { 
             return null;
         }
     }

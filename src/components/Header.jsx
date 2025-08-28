@@ -7,7 +7,7 @@ import { auth } from "../utils/firebase";
 import { addUser, removeUser } from "../utils/userSlice";
 
 const Header = () => {
-  const user = useSelector((state) => state.user) 
+  const user = useSelector((state) => state.user);
   // const user = auth.currentUser;
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -50,21 +50,30 @@ const Header = () => {
   }, []);
 
   return (
-    <div className="absolute w-full bg-gradient-to-b from-black z-10 flex flex-col md:flex-row px-12 py-2 items-center justify-between">
-      <img
-        className="md:w-80 w-44 py-0 mb-2 md:mb-0 mx-auto md:mx-0"
-        src={gem}
-        alt="Logo"
-      />
+    <div className="absolute w-full bg-gradient-to-b from-black z-10 flex flex-col md:flex-row px-10 py-2 items-center justify-between">
+      <img className="w-48" src={gem} alt="Logo" />
       {user && (
-        <div className="flex gap-1 items-center bg-orange-400/25 p-4 rounded-lg">
-          <img className="w-8 h-8" src={user?.photoURL} alt="logo" />
-          <button
+        <div className="flex gap-2 items-center  p-4 rounded-lg">
+          <img
+            className="w-8 h-8 rounded-2xl"
+            src={user?.photoURL}
+            alt="logo"
+          />
+          <div className="tracking-wide text-white bg-red-600 hover:bg-orange-700 transition px-4 py-1 rounded text-sm"
+          >
+            Home
+          </div>
+          <div className="tracking-wide text-white bg-red-600 hover:bg-orange-700 transition px-4 py-1 rounded text-sm"
+          >
+            Ai Recommends
+          </div>
+          <div
             onClick={handleSignOut}
-            className="font-mono tracking-wide text-white bg-orange-600 hover:bg-orange-700 transition px-4 py-1 rounded"
+            className="tracking-wide text-white bg-red-600 hover:bg-orange-700 transition px-4 py-1 rounded text-sm"
           >
             Sign Out
-          </button>
+          </div>
+          
         </div>
       )}
     </div>

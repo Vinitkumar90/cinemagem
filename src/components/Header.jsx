@@ -5,12 +5,20 @@ import { useNavigate } from "react-router";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { addUser, removeUser } from "../utils/userSlice";
+import { addGptToggle } from "../utils/gptSlice";
+import { SUPPORTED_LANG } from "../utils/constant";
+import { toggleLang } from "../utils/langSlice";
+
 
 const Header = () => {
   const user = useSelector((state) => state.user);
   // const user = auth.currentUser;
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const gptToogle = () => {
+    dispatch(addGptToggle());
+  };
 
   const handleSignOut = () => {
     signOut(auth)
@@ -22,6 +30,14 @@ const Header = () => {
         navigate("/error");
       });
   };
+
+  const changeLang = (e) => {
+    dispatch(toggleLang(e.target.value))
+    console.log(e.target.value)
+  }
+
+  const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
+
 
   //have to use it in a central place which is always present ie header
   useEffect(() => {
@@ -59,21 +75,33 @@ const Header = () => {
             src={user?.photoURL}
             alt="logo"
           />
-          <div className="tracking-wide text-white bg-red-600 hover:bg-orange-700 transition px-4 py-1 rounded text-sm"
+         {
+          showGptSearch && (
+            <select className="bg-neutral-500/20 text-white px-4 py-1 rounded" onChange={changeLang}>
+            {SUPPORTED_LANG.map((lang) => (
+              <option
+                className="bg-black text-white"
+                key={lang.identifier}
+                value={lang.name}
+              >
+                {lang.name}
+              </option>
+            ))}
+          </select>
+          )
+         }
+          <div
+            className="tracking-wide text-white bg-red-600 hover:bg-red-700 transition px-4 py-1 rounded text-sm cursor-pointer"
+            onClick={gptToogle}
           >
-            Home
-          </div>
-          <div className="tracking-wide text-white bg-red-600 hover:bg-orange-700 transition px-4 py-1 rounded text-sm"
-          >
-            Ai Recommends
+            {showGptSearch ? "Home" : "Ai Recommends"}
           </div>
           <div
             onClick={handleSignOut}
-            className="tracking-wide text-white bg-red-600 hover:bg-orange-700 transition px-4 py-1 rounded text-sm"
+            className="tracking-wide text-white bg-red-600 hover:bg-red-700 transition px-4 py-1 rounded text-sm cursor-pointer"
           >
             Sign Out
           </div>
-          
         </div>
       )}
     </div>

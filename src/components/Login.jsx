@@ -10,6 +10,7 @@ import {
 import { dp_url } from "../utils/constant";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
+import { BG_POSTER } from "../utils/constant";
 
 
 const Login = () => {

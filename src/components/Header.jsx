@@ -33,7 +33,6 @@ const Header = () => {
 
   const changeLang = (e) => {
     dispatch(toggleLang(e.target.value))
-    console.log(e.target.value)
   }
 
   const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
@@ -66,12 +65,14 @@ const Header = () => {
   }, []);
 
   return (
-    <div className="absolute w-full bg-gradient-to-b from-black z-10 flex flex-col md:flex-row px-10 py-2 items-center justify-between">
-      <img className="w-48" src={gem} alt="Logo" />
+    <div className=" w-full bg-gradient-to-b from-black flex flex-row px-1 md:px-10 md:py-2 items-center justify-between bg-black
+    fixed top-0 left-0 right-0 z-50
+    ">
+      <img className="w-24 md:w-48" src={gem} alt="Logo" />
       {user && (
         <div className="flex gap-2 items-center  p-4 rounded-lg">
           <img
-            className="w-8 h-8 rounded-2xl"
+            className="md:w-8 md:h-8 h-4 rounded-2xl"
             src={user?.photoURL}
             alt="logo"
           />
@@ -91,14 +92,14 @@ const Header = () => {
           )
          }
           <div
-            className="tracking-wide text-white bg-red-600 hover:bg-red-700 transition px-4 py-1 rounded text-sm cursor-pointer"
+            className="tracking-wide text-white bg-red-600 hover:bg-red-700 transition p-1  md:px-4 md:py-1 rounded text-xs md:text-sm cursor-pointer"
             onClick={gptToogle}
           >
-            {showGptSearch ? "Home" : "Ai Recommends"}
+            {showGptSearch ? "Home" : "Ai Help?"}
           </div>
           <div
             onClick={handleSignOut}
-            className="tracking-wide text-white bg-red-600 hover:bg-red-700 transition px-4 py-1 rounded text-sm cursor-pointer"
+            className="tracking-wide text-white bg-red-600 hover:bg-red-700 transition px-4 py-1 rounded text-xs md:text-sm cursor-pointer"
           >
             Sign Out
           </div>

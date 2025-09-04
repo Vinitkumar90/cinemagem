@@ -12,7 +12,6 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { BG_POSTER } from "../utils/constant";
 
-
 const Login = () => {
   const dispatch = useDispatch();
 
@@ -41,8 +40,7 @@ const Login = () => {
       )
         .then((userCredential) => {
           const user = userCredential.user;
-          console.log(user);
-          
+
           //update profile api
           updateProfile(user, {
             displayName: nameRef.current.value,
@@ -71,7 +69,7 @@ const Login = () => {
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          setMessage(errorMessage+errorCode);
+          setMessage(errorMessage + errorCode);
         });
     } else {
       //signin
@@ -93,78 +91,82 @@ const Login = () => {
   }
 
   return (
-    <div
-      className="bg-[url(https://static.vecteezy.com/system/resources/thumbnails/044/514/545/small_2x/background-a-movie-theater-where-love-stories-are-unfolding-on-the-big-screen-and-the-smell-of-popcorn-fills-the-air-photo.jpg)]
-                h-screen bg-no-repeat bg-center bg-cover brightness-80 contrast-125 relative "
-    >
-      <Header /> 
-      <form
-        className="py-6 px-7 bg-black mx-auto fixed top-32 left-145 max-w-120 opacity-85 flex flex-col gap-2 border-1 border-neutral-600 rounded-2xl"
-        onSubmit={(e) => e.preventDefault()}
-      >
-        <h2 className="mb-6 text-3xl font-bold text-white font-mono">
-          {signIn ? "Sign In" : "Sign Up"}
-        </h2>
-        {!signIn && (
+    <div>
+      <div className="fixed -z-10 w-full h-screen">
+        <img src={BG_POSTER} className=" w-full object-cover h-full" />
+      </div>
+      <div className="flex flex-col items-center gap-24">
+        <Header />
+        <form
+          className="py-6 px-7 bg-black mt-20  w-80 md:w-100 opacity-85 flex flex-col gap-2 border-1 border-neutral-600 rounded-2xl"
+          onSubmit={(e) => e.preventDefault()}
+        >
+          <h2 className="mb-6 text-3xl font-bold text-white font-mono">
+            {signIn ? "Sign In" : "Sign Up"}
+          </h2>
+          {!signIn && (
+            <div>
+              <input
+                type="text"
+                ref={nameRef}
+                placeholder="Enter your Name"
+                className="w-full  mb-6 py-2 px-4 rounded  border-1 border-gray-500  bg-slate-800 text-white
+              text-lg
+              "
+              />
+            </div>
+          )}
           <div>
             <input
-              type="text"
-              ref={nameRef}
-              placeholder="Enter your Name"
-              className="w-full  mb-6 py-2 px-4 rounded  border-1 border-gray-500  bg-slate-800 text-white
-              text-lg
+              type="email"
+              ref={emailRef}
+              placeholder="Enter your Email"
+              className="w-full  mb-6 py-2 px-4 border-1 rounded border-gray-500  bg-slate-800 text-white
+              text-lg"
+            />
+          </div>
+          <div>
+            <input
+              type="password"
+              ref={passRef}
+              placeholder="Enter your password"
+              className="w-full mb-2 py-2 px-4   border-1 rounded  border-gray-500 bg-slate-800 text-white
+              text-lg 
               "
             />
           </div>
-        )}
-        <div>
-          <input
-            type="email"
-            ref={emailRef}
-            placeholder="Enter your Email"
-            className="w-[350px]  mb-6 py-2 px-4 border-1 rounded border-gray-500  bg-slate-800 text-white
-              text-lg"
-          />
-        </div>
-        <div>
-          <input
-            type="password"
-            ref={passRef}
-            placeholder="Enter your password"
-            className="w-full mb-2 py-2 px-4   border-1 rounded  border-gray-500 bg-slate-800 text-white
-              text-lg 
-              "
-          />
-        </div>
 
-        {/* validate message */}
-        <p className="text-orange-500 text-sm font-semibold mb-2 ">{message}</p>
+          {/* validate message */}
+          <p className="text-orange-500 text-sm font-semibold mb-2 ">
+            {message}
+          </p>
 
-        <button
-          className="bg-orange-700 hover:bg-orange-600 text-white w-full  py-2 px-2  font-mono text-2xl rounded mb-2 transition"
-          onClick={() => validateKaro()}
-        >
-          Submit
-        </button>
+          <button
+            className="bg-orange-700 hover:bg-orange-600 text-white w-full  py-2 px-2  font-mono text-2xl rounded mb-2 transition"
+            onClick={() => validateKaro()}
+          >
+            Submit
+          </button>
 
-        <p className="text-white text-sm " onClick={toggle}>
-          {signIn ? (
-            <>
-              New to cinemaGEM?{" "}
-              <span className="text-blue-400 hover:underline cursor-pointer transition">
-                Signup now
-              </span>
-            </>
-          ) : (
-            <>
-              Already a user?{" "}
-              <span className="text-blue-400 hover:underline cursor-pointer transition">
-                Sign In
-              </span>
-            </>
-          )}
-        </p>
-      </form>
+          <p className="text-white text-sm " onClick={toggle}>
+            {signIn ? (
+              <>
+                New to cinemaGEM?{" "}
+                <span className="text-blue-400 hover:underline cursor-pointer transition">
+                  Signup now
+                </span>
+              </>
+            ) : (
+              <>
+                Already a user?{" "}
+                <span className="text-blue-400 hover:underline cursor-pointer transition">
+                  Sign In
+                </span>
+              </>
+            )}
+          </p>
+        </form>
+      </div>
     </div>
   );
 };

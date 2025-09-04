@@ -9,13 +9,12 @@ const MainContainer = () => {
   if (!nowPlayingMovies)
     return <p className="text-black font-bold">Loading...</p>; //doing an early return here
 
-  const mainMovie = nowPlayingMovies[0];
-  console.log(mainMovie);
+  const mainMovie = nowPlayingMovies[5];
 
   const { title, overview, id } = mainMovie;
 
   return (
-    <div className="bg-black overflow-hidden relative z-0 ">
+    <div className="overflow-hidden relative z-0 ">
       <VideoTitle title={title} overview={overview} />
       <VideoBackground movieId={id} />
     </div>
